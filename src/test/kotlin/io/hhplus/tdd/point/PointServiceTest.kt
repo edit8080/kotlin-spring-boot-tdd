@@ -59,7 +59,7 @@ class PointServiceTest {
         val exception = assertThrows<PointException.InvalidPointAmount>{ pointService.chargePoint(userId, chargeAmount) }
 
         // then
-        assertEquals(exception.message, "유효하지 않은 포인트 값입니다: -500. 포인트는 0 또는 양수여야 합니다.")
+        assertEquals(exception.message, "유효하지 않은 포인트 값입니다: -500. 포인트는 양수여야 합니다.")
     }
 
     @Test
@@ -102,7 +102,7 @@ class PointServiceTest {
         val exception = assertThrows<PointException.InvalidPointAmount>{ pointService.usePoint(userId, useAmount) }
 
         // then
-        assertEquals(exception.message, "유효하지 않은 포인트 값입니다: -500. 포인트는 0 또는 양수여야 합니다.")
+        assertEquals(exception.message, "유효하지 않은 포인트 값입니다: -500. 포인트는 양수여야 합니다.")
     }
 
     @Test
