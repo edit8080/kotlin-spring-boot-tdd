@@ -61,4 +61,47 @@ class PointServiceTest {
         // then
         assertEquals(exception.message, "유효하지 않은 포인트 값입니다: -500. 포인트는 0 또는 양수여야 합니다.")
     }
+
+    @Test
+    fun `1000 포인트가 있는 사용자가 500 포인트를 사용하면 잔액이 500 포인트가 되어야한다`(){
+        // given
+        val userId = 1L
+        userPointTable.insertOrUpdate(userId, 1000L)  // 초기 포인트 설정
+        val useAmount = 500L
+
+        // when
+        val result = pointService.usePoint(userId, useAmount)
+
+        // then
+        assertEquals(useAmount, result.point)
+        assertEquals(userId, result.id)
+    }
+
+    @Test
+    fun `이미 1000 포인트가 있는 사용자가 1500 포인트를 사용하려고 한다면, 에러가 발생해야한다`(){
+        // given
+        val userId = 1L
+        val userPoint = 1000L
+        userPointTable.insertOrUpdate(userId, userPoint)  // 초기 포인트 설정
+        val useAmount = 1500L
+
+        // when
+        val exception = assertThrows<PointException.InsufficientPoints>{ pointService.usePoint(userId, useAmount) }
+
+        // then
+        assertEquals(exception.message, "포인트가 부족합니다. 필요: 1500, 현재: 1000")
+    }
+
+    @Test
+    fun `사용하려는 포인트가 -500 같이 음수값이라면 에러가 발생해야한다`(){
+        // given
+        val userId = 1L
+        val useAmount = -500L
+
+        // when
+        val exception = assertThrows<PointException.InvalidPointAmount>{ pointService.usePoint(userId, useAmount) }
+
+        // then
+        assertEquals(exception.message, "유효하지 않은 포인트 값입니다: -500. 포인트는 0 또는 양수여야 합니다.")
+    }
 }
