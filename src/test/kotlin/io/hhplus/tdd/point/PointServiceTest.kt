@@ -140,7 +140,7 @@ class PointServiceTest {
 
         pointService.chargePoint(userId, chargePoint)
 
-        val histories = pointHistoryTable.selectAllByUserId(userId)
+        val histories = pointService.getPointHistories(userId)
 
         assertEquals(1, histories.size)
 
@@ -160,7 +160,7 @@ class PointServiceTest {
 
         pointService.usePoint(userId, usePoint)
 
-        val histories = pointHistoryTable.selectAllByUserId(userId)
+        val histories = pointService.getPointHistories(userId)
 
         assertEquals(1, histories.size)
 
@@ -180,7 +180,7 @@ class PointServiceTest {
         pointService.chargePoint(userId, chargePoint)
         pointService.usePoint(userId, usePoint)
 
-        val histories = pointHistoryTable.selectAllByUserId(userId)
+        val histories = pointService.getPointHistories(userId)
 
         assertEquals(2, histories.size)
 
@@ -199,7 +199,7 @@ class PointServiceTest {
         pointService.chargePoint(userId, chargePoint)
         assertThrows<PointException.InsufficientPoints>{ pointService.usePoint(userId, usePoint) }
 
-        val histories = pointHistoryTable.selectAllByUserId(userId)
+        val histories = pointService.getPointHistories(userId)
 
         assertEquals(1, histories.size)
         assertEquals(TransactionType.CHARGE, histories[0].type)

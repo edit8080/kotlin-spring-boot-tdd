@@ -58,4 +58,9 @@ class PointService(
     fun getPoint(userId: Long): UserPoint {
         return userPointTable.selectById(userId);
     }
+
+    // 포인트 이력 조회
+    fun getPointHistories(userId: Long): List<PointHistory> {
+        return pointHistoryTable.selectAllByUserId(userId)
+    }
 }
