@@ -8,6 +8,10 @@ class PointService(
     private val pointHistoryTable: PointHistoryTable
 ) {
     fun chargePoint(userId: Long, amount: Long): UserPoint {
+        if(amount < 0){
+            throw PointException.InvalidPointAmount(amount);
+        }
+
         val userPoint = userPointTable.selectById(userId)
         val updatedUserPoint = userPointTable.insertOrUpdate(userId, userPoint.point + amount)
 
