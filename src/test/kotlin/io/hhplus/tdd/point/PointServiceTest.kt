@@ -5,6 +5,7 @@ import io.hhplus.tdd.database.UserPointTable
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.assertThrows
 
 class PointServiceTest {
 
@@ -46,5 +47,18 @@ class PointServiceTest {
         // then
         assertEquals(1500L, result.point)
         assertEquals(userId, result.id)
+    }
+
+    @Test
+    fun `-500 포인트와 같이 음수값으로 충전하려고하면 에러가 발생해야한다`(){
+        // given
+        val userId = 1L
+        val chargeAmount = -500L
+
+        // when
+        val exception = assertThrows<PointException.InvalidPointAmount>{ pointService.chargePoint(userId, chargeAmount) }
+
+        // then
+        assertEquals(exception.message, "유효하지 않은 포인트 값입니다: -500. 포인트는 0 또는 양수여야 합니다.")
     }
 }
