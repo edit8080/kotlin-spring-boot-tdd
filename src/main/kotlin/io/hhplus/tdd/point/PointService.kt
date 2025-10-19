@@ -17,6 +17,14 @@ class PointService(
         val updatedPointAmount = userPoint.point + amount;
         val updatedUserPoint = userPointTable.insertOrUpdate(userId, updatedPointAmount)
 
+        // 포인트 충전 이력 저장
+        pointHistoryTable.insert(
+            userId,
+            amount,
+            TransactionType.CHARGE,
+            updatedUserPoint.updateMillis
+        )
+
         return updatedUserPoint
     }
 
@@ -34,6 +42,13 @@ class PointService(
         }
 
         val updatedUserPoint = userPointTable.insertOrUpdate(userId, updatedPointAmount)
+
+        // 포인트 사용 이력 저장
+        pointHistoryTable.insert(
+            TransactionType.USE,
+            updatedUserPoint.updateMillis
+        )
+
         return updatedUserPoint;
     }
 
