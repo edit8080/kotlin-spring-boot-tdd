@@ -7,12 +7,10 @@ class PointService(
     private val userPointTable: UserPointTable,
     private val pointHistoryTable: PointHistoryTable
 ) {
-
     fun chargePoint(userId: Long, amount: Long): UserPoint {
-        return UserPoint(
-            id = userId,
-            point = amount,
-            updateMillis = System.currentTimeMillis(),
-        )
+        val userPoint = userPointTable.selectById(userId)
+        val updatedUserPoint = userPointTable.insertOrUpdate(userId, userPoint.point + amount)
+
+        return updatedUserPoint
     }
 }
