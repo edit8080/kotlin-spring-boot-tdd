@@ -63,17 +63,17 @@ class PointServiceTest {
     }
 
     @Test
-    fun `1000 포인트가 있는 사용자가 500 포인트를 사용하면 잔액이 500 포인트가 되어야한다`(){
+    fun `1000 포인트가 있는 사용자가 1000 포인트를 사용하면 잔액이 0 포인트가 되어야한다`(){
         // given
         val userId = 1L
         userPointTable.insertOrUpdate(userId, 1000L)  // 초기 포인트 설정
-        val useAmount = 500L
+        val useAmount = 1000L
 
         // when
         val result = pointService.usePoint(userId, useAmount)
 
         // then
-        assertEquals(useAmount, result.point)
+        assertEquals(0, result.point)
         assertEquals(userId, result.id)
     }
 
