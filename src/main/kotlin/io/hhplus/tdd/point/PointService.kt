@@ -37,4 +37,8 @@ class PointService(
         return updatedUserPoint;
     }
 
+    // 포인트 조회
+    fun getPoint(userId: Long): UserPoint {
+        return userPointTable.selectById(userId);
+    }
 }
