@@ -45,6 +45,8 @@ class PointService(
 
         // 포인트 사용 이력 저장
         pointHistoryTable.insert(
+            userId,
+            amount,
             TransactionType.USE,
             updatedUserPoint.updateMillis
         )

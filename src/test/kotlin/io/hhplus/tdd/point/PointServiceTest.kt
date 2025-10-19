@@ -153,9 +153,12 @@ class PointServiceTest {
     @Test
     fun `포인트를 사용했을 때 사용 이력이 남아있어야한다`(){
         val userId = 1L
+        val userPoint = 1000L
+        userPointTable.insertOrUpdate(userId, userPoint)
+
         val usePoint = 1000L
 
-        pointService.chargePoint(userId, usePoint)
+        pointService.usePoint(userId, usePoint)
 
         val histories = pointHistoryTable.selectAllByUserId(userId)
 
@@ -194,7 +197,7 @@ class PointServiceTest {
         // 포인트 충전 후 포인트 사용
         // - 사용 시 1000 포인트보다 더 많은 1500 포인트를 사용하여 에러 발생
         pointService.chargePoint(userId, chargePoint)
-        pointService.usePoint(userId, usePoint)
+        assertThrows<PointException.InsufficientPoints>{ pointService.usePoint(userId, usePoint) }
 
         val histories = pointHistoryTable.selectAllByUserId(userId)
 
