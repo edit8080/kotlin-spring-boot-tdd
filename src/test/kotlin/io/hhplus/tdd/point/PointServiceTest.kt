@@ -50,6 +50,19 @@ class PointServiceTest {
     }
 
     @Test
+    fun `0 포인트를 충전하려고 하면 에러가 발생해야 한다`() {
+        // given
+        val userId = 1L
+        val chargeAmount = 0L
+
+        // when & then
+        val exception = assertThrows<PointException.InvalidPointAmount> {
+            pointService.chargePoint(userId, chargeAmount)
+        }
+        assertEquals("유효하지 않은 포인트 값입니다: 0. 포인트는 양수여야 합니다.", exception.message)
+    }
+    
+    @Test
     fun `-500 포인트와 같이 음수값으로 충전하려고하면 에러가 발생해야한다`(){
         // given
         val userId = 1L
@@ -90,6 +103,20 @@ class PointServiceTest {
 
         // then
         assertEquals(exception.message, "포인트가 부족합니다. 필요: 1500, 현재: 1000")
+    }
+
+    @Test
+    fun `0 포인트를 사용하려고 하면 에러가 발생해야 한다`() {
+        // given
+        val userId = 1L
+        userPointTable.insertOrUpdate(userId, 1000L)
+        val useAmount = 0L
+
+        // when & then
+        val exception = assertThrows<PointException.InvalidPointAmount> {
+            pointService.usePoint(userId, useAmount)
+        }
+        assertEquals("유효하지 않은 포인트 값입니다: 0. 포인트는 양수여야 합니다.", exception.message)
     }
 
     @Test
