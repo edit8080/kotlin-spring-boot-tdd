@@ -104,4 +104,32 @@ class PointServiceTest {
         // then
         assertEquals(exception.message, "유효하지 않은 포인트 값입니다: -500. 포인트는 0 또는 양수여야 합니다.")
     }
+
+    @Test
+    fun `사용자의 남아있는 포인트를 조회할 수 있어야한다`(){
+        // given
+        val userId = 1L
+        val userPoint = 1000L
+        userPointTable.insertOrUpdate(userId, userPoint)
+
+        // when
+        val result = pointService.getPoint(userId)
+
+        // then
+        assertEquals(userId, result.id)
+        assertEquals(userPoint, result.point)
+    }
+
+    @Test
+    fun `관련된 사용자가 없다면 포인트 조회 시 0 포인트가 조회되어야한다`(){
+        // given
+        val userId = 1L
+
+        // when
+        val result = pointService.getPoint(userId)
+
+        // then
+        assertEquals(userId, result.id)
+        assertEquals(0, result.point)
+    }
 }
