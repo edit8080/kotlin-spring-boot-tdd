@@ -18,7 +18,10 @@ class PointController(
     fun point(
         @PathVariable id: Long,
     ): UserPoint {
-        return pointService.getPoint(id)
+        logger.info("포인트 조회 요청 - userId: {}", id)
+        val result = pointService.getPoint(id)
+        logger.info("포인트 조회 완료 - userId: {}, point: {}", id, result.point)
+        return result
     }
 
     /**
@@ -28,7 +31,10 @@ class PointController(
     fun history(
         @PathVariable id: Long,
     ): List<PointHistory> {
-        return pointService.getPointHistories(id)
+        logger.info("포인트 이력 조회 요청 - userId: {}", id)
+        val result = pointService.getPointHistories(id)
+        logger.info("포인트 이력 조회 완료 - userId: {}, count: {}", id, result.size)
+        return result
     }
 
     /**
@@ -39,7 +45,10 @@ class PointController(
         @PathVariable id: Long,
         @RequestBody amount: Long,
     ): UserPoint {
-        return pointService.chargePoint(id, amount)
+        logger.info("포인트 충전 요청 - userId: {}, amount: {}", id, amount)
+        val result = pointService.chargePoint(id, amount)
+        logger.info("포인트 충전 완료 - userId: {}, newPoint: {}", id, result.point)
+        return result
     }
 
     /**
@@ -50,6 +59,9 @@ class PointController(
         @PathVariable id: Long,
         @RequestBody amount: Long,
     ): UserPoint {
-        return pointService.usePoint(id, amount)
+        logger.info("포인트 사용 요청 - userId: {}, amount: {}", id, amount)
+        val result = pointService.usePoint(id, amount)
+        logger.info("포인트 사용 완료 - userId: {}, remainingPoint: {}", id, result.point)
+        return result
     }
 }
