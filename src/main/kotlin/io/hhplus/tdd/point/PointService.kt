@@ -37,7 +37,7 @@ class PointService(
         val userPoint = userPointTable.selectById(userId)
         val updatedPointAmount = userPoint.point - amount
 
-        if(updatedPointAmount <= 0){
+        if(updatedPointAmount < 0){
             throw PointException.InsufficientPoints(amount, userPoint.point);
         }
 
