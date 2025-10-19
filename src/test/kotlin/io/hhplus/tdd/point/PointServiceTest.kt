@@ -132,4 +132,73 @@ class PointServiceTest {
         assertEquals(userId, result.id)
         assertEquals(0, result.point)
     }
+
+    @Test
+    fun `포인트를 충전했을 때 충전 이력이 남아있어야한다`(){
+        val userId = 1L
+        val chargePoint = 1000L
+
+        pointService.chargePoint(userId, chargePoint)
+
+        val histories = pointHistoryTable.selectAllByUserId(userId)
+
+        assertEquals(1, histories.size)
+
+        val chargeHistory = histories.first()
+        assertEquals(userId, chargeHistory.userId)
+        assertEquals(TransactionType.CHARGE, chargeHistory.type)
+        assertEquals(chargePoint, chargeHistory.amount)
+    }
+
+    @Test
+    fun `포인트를 사용했을 때 사용 이력이 남아있어야한다`(){
+        val userId = 1L
+        val usePoint = 1000L
+
+        pointService.chargePoint(userId, usePoint)
+
+        val histories = pointHistoryTable.selectAllByUserId(userId)
+
+        assertEquals(1, histories.size)
+
+        val useHistory = histories.first()
+        assertEquals(userId, useHistory.userId)
+        assertEquals(TransactionType.USE, useHistory.type)
+        assertEquals(usePoint, useHistory.amount)
+    }
+
+    @Test
+    fun `포인트를 사용한 이력을 사용한 순에 따라 조회할 수 있어야한다`() {
+        val userId = 1L
+        val chargePoint = 1000L
+        val usePoint = 500L
+
+        // 포인트 충전 후 포인트 사용
+        pointService.chargePoint(userId, chargePoint)
+        pointService.usePoint(userId, usePoint)
+
+        val histories = pointHistoryTable.selectAllByUserId(userId)
+
+        assertEquals(2, histories.size)
+
+        assertEquals(TransactionType.CHARGE, histories[0].type)
+        assertEquals(TransactionType.USE, histories[1].type)
+    }
+
+    @Test
+    fun `포인트 충전,사용 시 에러가 발생하면 이력 목록에 남아선 안된다`() {
+        val userId = 1L
+        val chargePoint = 1000L
+        val usePoint = 1500L
+
+        // 포인트 충전 후 포인트 사용
+        // - 사용 시 1000 포인트보다 더 많은 1500 포인트를 사용하여 에러 발생
+        pointService.chargePoint(userId, chargePoint)
+        pointService.usePoint(userId, usePoint)
+
+        val histories = pointHistoryTable.selectAllByUserId(userId)
+
+        assertEquals(1, histories.size)
+        assertEquals(TransactionType.CHARGE, histories[0].type)
+    }
 }
