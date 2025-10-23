@@ -1,5 +1,6 @@
 package io.hhplus.tdd
 
+import io.hhplus.tdd.point.PointException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -14,10 +15,20 @@ data class ErrorResponse(val code: String, val message: String)
 class ApiControllerAdvice : ResponseEntityExceptionHandler() {
     private val logger: Logger = LoggerFactory.getLogger(javaClass)
 
+    @ExceptionHandler(PointException::class)
+    fun handlePointException(e: PointException): ResponseEntity<ErrorResponse> {
+        logger.warn("PointException 발생: ${e.message}")
+        return ResponseEntity(
+            ErrorResponse("POINT_ERROR", e.message ?: "포인트 처리 중 오류가 발생했습니다."),
+            HttpStatus.BAD_REQUEST,
+        )
+    }
+
     @ExceptionHandler(Exception::class)
     fun handleException(e: Exception): ResponseEntity<ErrorResponse> {
+        logger.error("Exception 발생", e)
         return ResponseEntity(
-            ErrorResponse("500", "에러가 발생했습니다."),
+            ErrorResponse("INTERVAL_SERVER_ERROR", "에러가 발생했습니다."),
             HttpStatus.INTERNAL_SERVER_ERROR,
         )
     }

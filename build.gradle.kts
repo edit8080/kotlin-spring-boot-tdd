@@ -24,6 +24,7 @@ dependencies {
     implementation(libs.spring.boot.starter.web)
     annotationProcessor(libs.spring.boot.configuration.processor)
     testImplementation(libs.spring.boot.starter.test)
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.1.0")
 }
 
 // about source and compilation
